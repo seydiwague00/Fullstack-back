@@ -30,6 +30,11 @@ public class EtudiantController {
         return etudiantService.createEtudiant(etudiant);
     }
 
+    @PostMapping("/add-students")
+    public List<Etudiant> addEtudiant(@RequestBody List<Etudiant> etudiants) {
+        return etudiantService.addEtudiants(etudiants);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<Etudiant> updateEtudiant(@PathVariable Long id, @RequestBody Etudiant etudiantDetails) {
         return ResponseEntity.ok(etudiantService.updateEtudiant(id, etudiantDetails));

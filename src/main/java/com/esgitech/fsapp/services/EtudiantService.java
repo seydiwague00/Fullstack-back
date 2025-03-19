@@ -27,6 +27,10 @@ public class EtudiantService {
         return etudiantRepository.save(etudiant);
     }
 
+    public List<Etudiant> addEtudiants(List<Etudiant> etudiants) {
+        return etudiantRepository.saveAll(etudiants);
+    }
+
     public Etudiant updateEtudiant(Long id, Etudiant etudiantDetails) {
         Etudiant etudiant = getEtudiantById(id);
         etudiant.setNom(etudiantDetails.getNom());
