@@ -93,4 +93,14 @@ public class EtudiantController {
         }
     }
 
+    @GetMapping("/filteredStudents")
+    public List<Etudiant> getFilteredEtudiants(@RequestParam(value = "filter", required = false) String filter) {
+        if (filter == null || filter.isEmpty()) {
+            return etudiantService.findAll();
+        } else {
+            return etudiantService.findByNomOrPrenomContainingIgnoreCase(filter);
+        }
+    }
+
+
 }

@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Repository
 public interface EtudiantRepository extends JpaRepository<Etudiant, Long> {
 
@@ -17,4 +19,7 @@ public interface EtudiantRepository extends JpaRepository<Etudiant, Long> {
     @Transactional
     @Query("UPDATE Etudiant e SET e.nom = :nom, e.prenom = :prenom, e.email = :email, e.niveauEtude = :niveauEtude WHERE e.codeEtudiant = :codeEtudiant")
     int updateEtudiantByCodeEtudiant(String codeEtudiant, String nom, String prenom, String email, NiveauEtude niveauEtude);
+
+
+    List<Etudiant> findByNomContainingIgnoreCaseOrPrenomContainingIgnoreCase(String filter, String filter1);
 }

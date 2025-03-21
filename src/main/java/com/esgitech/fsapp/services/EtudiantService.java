@@ -61,4 +61,18 @@ public class EtudiantService {
         Etudiant etudiant = getEtudiantById(id);
         etudiantRepository.delete(etudiant);
     }
+
+    public List<Etudiant> findAll() {
+        return etudiantRepository.findAll();
+    }
+
+    /**
+     * Recherche des étudiants par nom ou prénom.
+     *
+     * @param filter Le terme de recherche (nom ou prénom)
+     * @return Une liste d'étudiants correspondants au filtre
+     */
+    public List<Etudiant> findByNomOrPrenomContainingIgnoreCase(String filter) {
+        return etudiantRepository.findByNomContainingIgnoreCaseOrPrenomContainingIgnoreCase(filter, filter);
+    }
 }
