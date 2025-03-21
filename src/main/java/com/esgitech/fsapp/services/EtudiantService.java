@@ -1,12 +1,13 @@
 package com.esgitech.fsapp.services;
 
+import com.esgitech.fsapp.enums.NiveauEtude;
 import com.esgitech.fsapp.exceptions.EtudiantNotFoundException;
 import com.esgitech.fsapp.model.Etudiant;
 import com.esgitech.fsapp.repos.EtudiantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class EtudiantService {
@@ -20,10 +21,11 @@ public class EtudiantService {
 
     public Etudiant getEtudiantById(Long id) {
         return etudiantRepository.findById(id)
-                .orElseThrow(() -> new EtudiantNotFoundException(id));
+                .orElseThrow(() -> new EtudiantNotFoundException("ID : " + id));
     }
 
     public Etudiant createEtudiant(Etudiant etudiant) {
+        etudiant.setCodeEtudiant(etudiant.getCodeEtudiant().toUpperCase());
         return etudiantRepository.save(etudiant);
     }
 
@@ -36,9 +38,19 @@ public class EtudiantService {
         etudiant.setNom(etudiantDetails.getNom());
         etudiant.setPrenom(etudiantDetails.getPrenom());
         etudiant.setEmail(etudiantDetails.getEmail());
-        etudiant.setCodeEtudiant(etudiantDetails.getCodeEtudiant());
+        etudiant.setCodeEtudiant(etudiantDetails.getCodeEtudiant().toUpperCase());
         etudiant.setNiveauEtude(etudiantDetails.getNiveauEtude());
         return etudiantRepository.save(etudiant);
+    }
+
+    public int updateEtudiantByCodeEtudiant(
+            String codeEtudiant,
+            String nom,
+            String prenom,
+            String email,
+            NiveauEtude niveauEtude
+    ) {
+        return etudiantRepository.updateEtudiantByCodeEtudiant(codeEtudiant, nom, prenom, email, niveauEtude);
     }
 
     public void deleteEtudiant(Long id) {
