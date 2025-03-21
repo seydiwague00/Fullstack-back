@@ -8,7 +8,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.lang.model.element.NestingKind;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
@@ -44,7 +50,9 @@ public class EtudiantController {
     }
 
     @PutMapping("/updateByCodeEtudiant")
-    public ResponseEntity<String> updateEtudiantByCodeEtudiant(@RequestBody Etudiant etudiantDetails) {
+    public ResponseEntity<Map<String, String>> updateEtudiantByCodeEtudiant(@RequestBody Etudiant etudiantDetails) {
+        Map<String, String> response = new HashMap<>();
+
         try {
             String code = etudiantDetails.getCodeEtudiant();
             String nom = etudiantDetails.getNom();
@@ -52,29 +60,37 @@ public class EtudiantController {
             String email = etudiantDetails.getEmail();
             NiveauEtude niveauEtude = etudiantDetails.getNiveauEtude();
 
-            // Afficher les données reçues dans les logs (optionnel)
             System.out.println(etudiantDetails);
 
-            // Appel du service pour mettre à jour l'étudiant
             int rowsUpdated = etudiantService.updateEtudiantByCodeEtudiant(code, nom, prenom, email, niveauEtude);
 
+
             if (rowsUpdated == 0) {
-                // Si aucune ligne n'a été mise à jour, l'étudiant n'a pas été trouvé
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Étudiant non trouvé avec le code : " + code);
+                return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
             }
 
-            // Retourner une réponse de succès
-            return ResponseEntity.ok("Étudiant mis à jour avec succès.");
+            response.put("message", "Étudiant mis à jour avec succès.");
+
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
-            // Gestion d'autres exceptions
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur lors de la mise à jour de l'étudiant : " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteEtudiant(@PathVariable Long id) {
-        etudiantService.deleteEtudiant(id);
-        return ResponseEntity.noContent().build();
+    @DeleteMapping("/{code}")
+    public ResponseEntity<Map<String, String>> deleteEtudiant(@PathVariable String code) {
+        Map<String, String> response = new HashMap<>();
+        try {
+            Etudiant optionalEtudiant = etudiantService.findByCodeEtudiant(code);
+            if (optionalEtudiant == null) {
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            }
+            etudiantService.deleteEtudiant(optionalEtudiant.getId());
+            response.put("Message", "Étudiant supprimé avec succès.");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
+
 }

@@ -43,6 +43,10 @@ public class EtudiantService {
         return etudiantRepository.save(etudiant);
     }
 
+    public Etudiant findByCodeEtudiant(String codeEtudiant) {
+        return etudiantRepository.findByCodeEtudiant(codeEtudiant);
+    }
+
     public int updateEtudiantByCodeEtudiant(
             String codeEtudiant,
             String nom,
