@@ -3,7 +3,7 @@ package com.esgitech.fsapp.services;
 import com.esgitech.fsapp.enums.NiveauEtude;
 import com.esgitech.fsapp.exceptions.EtudiantNotFoundException;
 import com.esgitech.fsapp.model.Etudiant;
-import com.esgitech.fsapp.repos.EtudiantRepository;
+import com.esgitech.fsapp.repository.EtudiantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

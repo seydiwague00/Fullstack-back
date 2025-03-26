@@ -1,4 +1,4 @@
-package com.esgitech.fsapp.repos;
+package com.esgitech.fsapp.repository;
 
 import com.esgitech.fsapp.enums.NiveauEtude;
 import com.esgitech.fsapp.model.Etudiant;
