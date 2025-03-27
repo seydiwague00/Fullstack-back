@@ -2,6 +2,7 @@ package com.esgitech.fsapp.controllers;
 
 import com.esgitech.fsapp.enums.NiveauEtude;
 import com.esgitech.fsapp.model.Etudiant;
+import com.esgitech.fsapp.model.Note;
 import com.esgitech.fsapp.services.EtudiantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -59,10 +60,11 @@ public class EtudiantController {
             String prenom = etudiantDetails.getPrenom();
             String email = etudiantDetails.getEmail();
             NiveauEtude niveauEtude = etudiantDetails.getNiveauEtude();
+            List<Note> notes = etudiantDetails.getNotes();
 
             System.out.println(etudiantDetails);
 
-            int rowsUpdated = etudiantService.updateEtudiantByCodeEtudiant(code, nom, prenom, email, niveauEtude);
+            int rowsUpdated = etudiantService.updateEtudiantByCodeEtudiant(code, nom, prenom, email, niveauEtude,notes);
 
 
             if (rowsUpdated == 0) {

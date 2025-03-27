@@ -3,11 +3,14 @@ package com.esgitech.fsapp.services;
 import com.esgitech.fsapp.enums.NiveauEtude;
 import com.esgitech.fsapp.exceptions.EtudiantNotFoundException;
 import com.esgitech.fsapp.model.Etudiant;
+import com.esgitech.fsapp.model.Note;
 import com.esgitech.fsapp.repository.EtudiantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class EtudiantService {
@@ -47,15 +50,43 @@ public class EtudiantService {
         return etudiantRepository.findByCodeEtudiant(codeEtudiant);
     }
 
+    @Transactional
     public int updateEtudiantByCodeEtudiant(
             String codeEtudiant,
             String nom,
             String prenom,
             String email,
-            NiveauEtude niveauEtude
+            NiveauEtude niveauEtude,
+            List<Note> notes
     ) {
-        return etudiantRepository.updateEtudiantByCodeEtudiant(codeEtudiant, nom, prenom, email, niveauEtude);
+        // Récupérer l'étudiant par son code
+        Optional<Etudiant> optionalEtudiant = Optional.ofNullable(etudiantRepository.findByCodeEtudiant(codeEtudiant));
+
+        if (optionalEtudiant.isEmpty()) {
+            throw new RuntimeException("Étudiant avec le code " + codeEtudiant + " non trouvé !");
+        }
+
+        Etudiant etudiant = optionalEtudiant.get();
+
+        // Mettre à jour les informations de l'étudiant
+        etudiant.setNom(nom);
+        etudiant.setPrenom(prenom);
+        etudiant.setEmail(email);
+        etudiant.setNiveauEtude(niveauEtude);
+
+        // Mettre à jour les notes
+        etudiant.getNotes().clear(); // Supprime les anciennes notes
+        for (Note note : notes) {
+            note.setEtudiant(etudiant); // Associe la nouvelle note à l'étudiant
+        }
+        etudiant.getNotes().addAll(notes);
+
+        // Sauvegarder l'étudiant avec ses nouvelles notes
+        etudiantRepository.save(etudiant);
+
+        return 1; // Indiquer qu'une mise à jour a été effectuée
     }
+
 
     public void deleteEtudiant(Long id) {
         Etudiant etudiant = getEtudiantById(id);

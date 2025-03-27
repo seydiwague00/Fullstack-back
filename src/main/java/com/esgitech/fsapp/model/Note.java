@@ -1,14 +1,19 @@
 package com.esgitech.fsapp.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "notes")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+// Gère les références circulaires
 public class Note {
 
     @Id
@@ -20,6 +25,5 @@ public class Note {
 
     @ManyToOne
     @JoinColumn(name = "etudiant_id", nullable = false)
-    @JsonBackReference
     private Etudiant etudiant;
 }

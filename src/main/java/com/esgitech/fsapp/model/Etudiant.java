@@ -1,10 +1,14 @@
 package com.esgitech.fsapp.model;
 
 import com.esgitech.fsapp.enums.NiveauEtude;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -12,6 +16,8 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+// Gère les références circulaires
 public class Etudiant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,8 +34,7 @@ public class Etudiant {
     private NiveauEtude niveauEtude;
 
     @OneToMany(mappedBy = "etudiant", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference  // Ajout de cette annotation
-    private List<Note> notes;
+    private List<Note> notes = new ArrayList<>();
 
     // Constructeur approprié sans Object
     public Etudiant(String nom, String prenom, String email, String codeEtudiant, NiveauEtude niveauEtude, List<Note> notes) {
