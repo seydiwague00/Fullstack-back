@@ -7,6 +7,7 @@ import com.esgitech.fsapp.services.EtudiantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.lang.model.element.NestingKind;
@@ -25,11 +26,13 @@ public class EtudiantController {
     @Autowired
     private EtudiantService etudiantService;
 
+    @PreAuthorize("hasAnyAuthority('SCOPE_USER')")
     @GetMapping
     public List<Etudiant> getAllEtudiants() {
         return etudiantService.getAllEtudiants();
     }
 
+    @PreAuthorize("hasAnyAuthority('SCOPE_USER')")
     @GetMapping("/{id}")
     public ResponseEntity<Etudiant> getEtudiantById(@PathVariable Long id) {
         return ResponseEntity.ok(etudiantService.getEtudiantById(id));
@@ -40,16 +43,19 @@ public class EtudiantController {
         return etudiantService.createEtudiant(etudiant);
     }
 
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN')")
     @PostMapping("/add-students")
     public List<Etudiant> addEtudiant(@RequestBody List<Etudiant> etudiants) {
         return etudiantService.addEtudiants(etudiants);
     }
 
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<Etudiant> updateEtudiant(@PathVariable Long id, @RequestBody Etudiant etudiantDetails) {
         return ResponseEntity.ok(etudiantService.updateEtudiant(id, etudiantDetails));
     }
 
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN')")
     @PutMapping("/updateByCodeEtudiant")
     public ResponseEntity<Map<String, String>> updateEtudiantByCodeEtudiant(@RequestBody Etudiant etudiantDetails) {
         Map<String, String> response = new HashMap<>();
@@ -79,6 +85,7 @@ public class EtudiantController {
         }
     }
 
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN')")
     @DeleteMapping("/{code}")
     public ResponseEntity<Map<String, String>> deleteEtudiant(@PathVariable String code) {
         Map<String, String> response = new HashMap<>();
@@ -95,6 +102,7 @@ public class EtudiantController {
         }
     }
 
+    @PreAuthorize("hasAnyAuthority('SCOPE_USER')")
     @GetMapping("/filteredStudents")
     public List<Etudiant> getFilteredEtudiants(@RequestParam(value = "filter", required = false) String filter) {
         if (filter == null || filter.isEmpty()) {
